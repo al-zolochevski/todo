@@ -57,32 +57,39 @@ export default class App extends Component {
         })
     }
 
+    toggleProperty(arr, id, propName) {
+        const index = arr.findIndex((element) => element.id === id);
+
+        const oldItem = arr[index];
+        const newItem = {...oldItem, [propName]: !oldItem[propName]};
+
+        return [
+            ...arr.slice(0, index),
+            newItem,
+            ...arr.slice(index + 1)
+        ];
+    }
+
     onToggleDone = (id) => {
         this.setState(({arrTodoItems}) => {
-            const index = arrTodoItems.findIndex((element) => element.id === id);
-
-            const oldItem = arrTodoItems[index];
-
-            const newItem = {...oldItem, done: !oldItem.done};
-
-            const newArray = [
-                ...arrTodoItems.slice(0, index),
-                newItem,
-                ...arrTodoItems.slice(index + 1)
-            ];
             return {
-                arrTodoItems: newArray
+                arrTodoItems: this.toggleProperty(arrTodoItems, id, 'done')
             }
         })
     };
 
+
     onToggleImportant = (id) => {
-        console.log('toggle important' + id)
+        this.setState(({arrTodoItems}) => {
+            return {
+                arrTodoItems: this.toggleProperty(arrTodoItems, id, 'important')
+            }
+        })
     }
 
     render() {
-         const doneCount = this.state.arrTodoItems.filter((element) => element.done).length;
-         const todoCount = this.state.arrTodoItems.length - doneCount;
+        const doneCount = this.state.arrTodoItems.filter((element) => element.done).length;
+        const todoCount = this.state.arrTodoItems.length - doneCount;
 
         return (
             <div className="todo-app">
